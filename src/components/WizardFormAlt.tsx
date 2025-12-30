@@ -1,21 +1,24 @@
 import { useState, type FC } from "react";
-import { useForm, FormProvider, type FieldPath } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { formSchema, type FormData } from "@schemas/schema";
+import { useForm, FormProvider } from "react-hook-form";
+import {
+  personalInfoSchema,
+  accountInfoSchema,
+  formSchema,
+  type FormData,
+} from "@schemas/schemaAlt";
 import PersonalInfo from "@components/steps/PersonalInfo";
 import AccountInfo from "@components/steps/AccountInfo";
+import { createStepResolver } from "@utils/form-helpers";
 
-const stepFields: FieldPath<FormData>[][] = [
-  ["firstName", "lastName"],
-  ["email", "password"],
-];
+const stepSchemas = [personalInfoSchema, accountInfoSchema];
 
 const WizardFormAlt: FC = () => {
   const [step, setStep] = useState(0);
 
   const methods = useForm<FormData>({
-    resolver: zodResolver(formSchema),
-    mode: "onTouched", // La doc suele recomendar 'onTouched' para UX de formularios largos
+    resolver: createStepResolver<FormData>(stepSchemas[step]),
+    mode: "all",
+    shouldUnregister: false,
     defaultValues: {
       firstName: "",
       lastName: "",
@@ -24,16 +27,55 @@ const WizardFormAlt: FC = () => {
     },
   });
 
-  // Eliminamos la extracción de 'errors' aquí para evitar re-renders innecesarios en el Wizard
+  const {
+    formState: { errors },
+    trigger,
+    handleSubmit,
+    getValues,
+  } = methods;
 
   const next = async () => {
-    const fields = stepFields[step];
-    // Trigger valida y actualiza el formState automáticamente
-    const isStepValid = await methods.trigger(fields, { shouldFocus: true });
-    if (isStepValid) setStep((s) => s + 1);
+    const valid = await trigger(undefined, {
+      shouldFocus: true,
+    });
+
+    if (valid) {
+      setStep((s) => s + 1);
+    } else {
+      console.log("Errores detectados en el paso:", errors);
+    }
   };
 
   const back = () => setStep((s) => s - 1);
+
+  // Manejo del envío final
+  const onSubmitFinal = async () => {
+    // Validamos el último paso
+    const valid = await trigger();
+
+    if (valid) {
+      // Usamos handleSubmit para envolver nuestra lógica final
+      // Nota: Pasamos una función anónima que ignora la 'data' parcial que viene del resolver
+      // y en su lugar usamos getValues() para obtener todo el objeto FormData.
+      await handleSubmit(() => {
+        const fullData = getValues(); // Obtenemos TODOS los datos (paso 1 + paso 2)
+
+        // Opcional: Una validación final de seguridad contra el esquema completo
+        const finalValidation = formSchema.safeParse(fullData);
+
+        if (finalValidation.success) {
+          onSubmit(finalValidation.data);
+        } else {
+          console.error(
+            "Error de integridad en el formulario final",
+            finalValidation.error
+          );
+        }
+      })();
+    } else {
+      console.log("Errores detectados en el paso:", errors);
+    }
+  };
 
   const onSubmit = (data: FormData) => {
     console.log("Formulario final:", data);
@@ -44,11 +86,9 @@ const WizardFormAlt: FC = () => {
 
   return (
     <FormProvider {...methods}>
-      {/* Mantenemos el onSubmit nativo. 
-         Si es el último paso, handleSubmit validará TODO el esquema antes de ejecutar onSubmit.
-      */}
-      <form onSubmit={methods.handleSubmit(onSubmit)} noValidate>
+      <form onSubmit={(e) => e.preventDefault()} noValidate>
         {step === 0 && <PersonalInfo />}
+
         {step === 1 && <AccountInfo />}
 
         <div style={{ marginTop: 20 }}>
@@ -58,12 +98,16 @@ const WizardFormAlt: FC = () => {
             </button>
           )}
 
-          {step < stepFields.length - 1 ? (
+          {step < stepSchemas.length - 1 && (
             <button type="button" onClick={next}>
               Siguiente
             </button>
-          ) : (
-            <button type="submit">Enviar</button>
+          )}
+
+          {step === stepSchemas.length - 1 && (
+            <button type="button" onClick={onSubmitFinal}>
+              Enviar
+            </button>
           )}
         </div>
       </form>
