@@ -35,7 +35,9 @@ const WizardFormAlt: FC = () => {
   } = methods;
 
   const next = async () => {
-    const valid = await trigger(undefined, {
+    const fields = Object.keys(stepSchemas[step].shape) as (keyof FormData)[];
+
+    const valid = await trigger(fields, {
       shouldFocus: true,
     });
 
