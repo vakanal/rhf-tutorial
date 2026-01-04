@@ -19,5 +19,6 @@ export const useWizard = () => {
     isLast,
     next,
     back,
+    setStep: setStepIndex,
   };
 };

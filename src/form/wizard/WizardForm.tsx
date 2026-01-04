@@ -8,6 +8,8 @@ const defaultValues: FormData = {
   lastName: "",
   email: "",
   password: "",
+  country: "",
+  state: "",
 };
 
 const WizardForm = () => {
@@ -39,8 +41,8 @@ const WizardForm = () => {
 
   const submitFinal = handleSubmit(() => {
     const data = getValues();
-
     const finalValidation = formSchema.safeParse(data);
+
     if (!finalValidation.success) {
       console.log("FINAL ERRORS:", errors);
       return;
@@ -48,6 +50,8 @@ const WizardForm = () => {
 
     console.log("FORM DATA:", finalValidation.data);
     alert("Formulario enviado");
+    methods.reset();
+    wizard.setStep(0);
   });
 
   return (

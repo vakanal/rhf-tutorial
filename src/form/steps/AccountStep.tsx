@@ -1,6 +1,6 @@
 import type { FC } from "react";
 import { useFormContext } from "react-hook-form";
-import type { FormData } from "@schemas/schema";
+import type { FormData } from "../schemas/form.schema";
 
 const AccountStep: FC = () => {
   const {
@@ -13,14 +13,14 @@ const AccountStep: FC = () => {
       <h2>Cuenta</h2>
 
       <input {...register("email")} placeholder="Email" />
-      {errors.email && <p>{errors.email.message}</p>}
+      {errors.email && <p role="alert">{errors.email.message}</p>}
 
       <input
         type="password"
         {...register("password")}
         placeholder="Contraseña"
       />
-      {errors.password && <p>{errors.password.message}</p>}
+      {errors.password && <p role="alert">{errors.password.message}</p>}
     </>
   );
 };
