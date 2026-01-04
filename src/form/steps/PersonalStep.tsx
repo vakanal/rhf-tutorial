@@ -1,21 +1,12 @@
-import { useFormContext } from "react-hook-form";
-import type { FormData } from "../schemas/form.schema";
+import type { FC } from "react";
+import { RHFTextField } from "../components/RHFTextField";
 
-const PersonalStep = () => {
-  const {
-    register,
-    formState: { errors },
-  } = useFormContext<FormData>();
-
+const PersonalStep: FC = () => {
   return (
     <>
       <h2>Información personal</h2>
-
-      <input {...register("firstName")} placeholder="Nombre" />
-      {errors.firstName && <p>{errors.firstName.message}</p>}
-
-      <input {...register("lastName")} placeholder="Apellido" />
-      {errors.lastName && <p>{errors.lastName.message}</p>}
+      <RHFTextField name="firstName" label="Nombre" />
+      <RHFTextField name="lastName" label="Apellido" />
     </>
   );
 };

@@ -2,47 +2,32 @@ import { useEffect, useMemo, type FC } from "react";
 import { useFormContext, useWatch } from "react-hook-form";
 import { STATES_BY_COUNTRY, COUNTRY_OPTIONS } from "../mocks/data.mock";
 import type { FormData } from "../schemas/form.schema";
+import { RHFSelect } from "../components/RHFSelect";
 
 const DependentSelectsStep: FC = () => {
-  const {
-    register,
-    control,
-    resetField,
-    formState: { errors },
-  } = useFormContext<FormData>();
+  const { control, resetField } = useFormContext<FormData>();
 
-  /**
-   * 3) Escucha cambios en country sin re-render global
-   *    Más eficiente que watch() directo. :contentReference[oaicite:4]{index=4}
-   */
   const selectedCountry = useWatch({
     control,
     name: "country",
   });
 
-  /**
-   * 4) Cuando cambie el país, resetea el estado
-   *    para evitar inconsistencia en formState.
-   */
-  useEffect(() => {
-    resetField("state");
-  }, [selectedCountry, resetField]);
-
-  /**
-   * 5) Opciones de estados memorizadas basadas en el país.
-   */
   const stateOptions = useMemo(() => {
-    if (!selectedCountry) {
-      return [];
-    }
+    if (!selectedCountry) return [];
 
     return STATES_BY_COUNTRY[selectedCountry] ?? [];
   }, [selectedCountry]);
 
+  useEffect(() => {
+    resetField("state");
+  }, [selectedCountry, resetField]);
+
   return (
     <>
-      <h2>Seleccione país y estado</h2>
-
+      <h2>País y comunidad</h2>
+      <RHFSelect name="country" label="País" options={COUNTRY_OPTIONS} />
+      <RHFSelect name="state" label="Comunidad" options={stateOptions} />
+      {/*
       <select {...register("country")}>
         <option value="">-- Selecciona País --</option>
         {COUNTRY_OPTIONS.map((opt) => (
@@ -66,6 +51,7 @@ const DependentSelectsStep: FC = () => {
         ))}
       </select>
       {errors.state && <p role="alert">{errors.state.message}</p>}
+      */}
     </>
   );
 };

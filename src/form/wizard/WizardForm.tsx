@@ -2,6 +2,8 @@ import { FormProvider, useForm } from "react-hook-form";
 import { formSchema, type FormData } from "../schemas/form.schema";
 import { useWizard } from "./useWizard";
 import { createStepResolver } from "../utils/createStepResolver";
+import { Button } from "react-bootstrap";
+import { ArrowLeft, ArrowRight, Save } from "react-bootstrap-icons";
 
 const defaultValues: FormData = {
   firstName: "",
@@ -36,7 +38,6 @@ const WizardForm = () => {
     const valid = await trigger(fields, { shouldFocus: true });
 
     if (valid) wizard.next();
-    else console.log("ERRORS:", errors);
   };
 
   const submitFinal = handleSubmit(() => {
@@ -61,21 +62,21 @@ const WizardForm = () => {
 
         <div style={{ marginTop: 20 }}>
           {!wizard.isFirst && (
-            <button type="button" onClick={wizard.back}>
-              Atrás
-            </button>
+            <Button variant="secondary" onClick={wizard.back}>
+              <ArrowLeft className="me-1" /> Atrás
+            </Button>
           )}
 
           {!wizard.isLast && (
-            <button type="button" onClick={next}>
-              Siguiente
-            </button>
+            <Button variant="primary" onClick={next}>
+              Siguiente <ArrowRight className="ms-1" />
+            </Button>
           )}
 
           {wizard.isLast && (
-            <button type="button" onClick={submitFinal}>
-              Enviar
-            </button>
+            <Button variant="success" onClick={submitFinal}>
+              <Save className="me-2" /> Enviar
+            </Button>
           )}
         </div>
       </form>
