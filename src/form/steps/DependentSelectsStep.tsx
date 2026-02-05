@@ -20,39 +20,27 @@ const DependentSelectsStep: FC = () => {
 
   useEffect(() => {
     resetField("state");
-  }, [selectedCountry, resetField]);
+  }, [resetField]);
 
   return (
-    <>
-      <h2>País y comunidad</h2>
-      <RHFSelect name="country" label="País" options={COUNTRY_OPTIONS} />
-      <RHFSelect name="state" label="Comunidad" options={stateOptions} />
-      {/*
-      <select {...register("country")}>
-        <option value="">-- Selecciona País --</option>
-        {COUNTRY_OPTIONS.map((opt) => (
-          <option key={opt.value} value={opt.value}>
-            {opt.label}
-          </option>
-        ))}
-      </select>
-      {errors.country && <p role="alert">{errors.country.message}</p>}
-
-      <select {...register("state")} disabled={!selectedCountry}>
-        <option value="">
-          {selectedCountry
-            ? "-- Selecciona Estado --"
-            : "Selecciona país primero"}
-        </option>
-        {stateOptions.map((opt) => (
-          <option key={opt.value} value={opt.value}>
-            {opt.label}
-          </option>
-        ))}
-      </select>
-      {errors.state && <p role="alert">{errors.state.message}</p>}
-      */}
-    </>
+    <fieldset>
+      <legend className="h4 mb-3">Ubicación</legend>
+      <RHFSelect 
+        name="country" 
+        label="País" 
+        options={COUNTRY_OPTIONS}
+        required
+        description="Selecciona tu país de residencia"
+      />
+      <RHFSelect 
+        name="state" 
+        label="Comunidad autónoma" 
+        options={stateOptions}
+        required={!!selectedCountry}
+        description={selectedCountry ? "Selecciona tu comunidad autónoma" : "Primero selecciona un país"}
+        disabled={!selectedCountry}
+      />
+    </fieldset>
   );
 };
 

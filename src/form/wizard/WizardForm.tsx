@@ -4,6 +4,7 @@ import { useWizard } from "./useWizard";
 import { createStepResolver } from "../utils/createStepResolver";
 import { Button } from "react-bootstrap";
 import { ArrowLeft, ArrowRight, Save } from "react-bootstrap-icons";
+import { useFocusManagement } from "@hooks/useFocusManagement";
 
 const defaultValues: FormData = {
   firstName: "",
@@ -28,16 +29,28 @@ const WizardForm = () => {
     handleSubmit,
     getValues,
     trigger,
-    formState: { errors },
   } = methods;
 
   const StepComponent = wizard.step.component;
 
+  // Focus management for step changes
+  const { focusFirstError } = useFocusManagement({ shouldFocus: false });
+
   const next = async () => {
     const fields = Object.keys(wizard.step.schema.shape) as (keyof FormData)[];
-    const valid = await trigger(fields, { shouldFocus: true });
+    const valid = await trigger(fields, { shouldFocus: false });
 
-    if (valid) wizard.next();
+    if (valid) {
+      wizard.next();
+      // Focus first input after step change
+      setTimeout(() => {
+        const firstInput = document.querySelector('input, select, textarea') as HTMLElement;
+        firstInput?.focus();
+      }, 100);
+    } else {
+      // Focus first error field if validation fails
+      focusFirstError();
+    }
   };
 
   const submitFinal = handleSubmit(() => {
@@ -45,7 +58,9 @@ const WizardForm = () => {
     const finalValidation = formSchema.safeParse(data);
 
     if (!finalValidation.success) {
-      console.log("FINAL ERRORS:", errors);
+      console.log("FINAL ERRORS:", finalValidation.error.issues);
+      // Focus first error field
+      focusFirstError();
       return;
     }
 
@@ -58,27 +73,44 @@ const WizardForm = () => {
   return (
     <FormProvider {...methods}>
       <form onSubmit={(e) => e.preventDefault()} noValidate>
-        <StepComponent />
+        <div role="tabpanel" aria-labelledby={`step-${wizard.stepIndex}`}>
+          <StepComponent />
+        </div>
 
-        <div style={{ marginTop: 20 }}>
+        <nav aria-label="Form navigation" style={{ marginTop: 20 }}>
           {!wizard.isFirst && (
-            <Button variant="secondary" onClick={wizard.back}>
-              <ArrowLeft className="me-1" /> Atrás
+            <Button 
+              variant="secondary" 
+              onClick={wizard.back}
+              className="min-touch-target focus-visible:focus-visible"
+              aria-label="Go to previous step"
+            >
+              <ArrowLeft className="me-1" aria-hidden="true" /> Atrás
             </Button>
           )}
 
           {!wizard.isLast && (
-            <Button variant="primary" onClick={next}>
-              Siguiente <ArrowRight className="ms-1" />
+            <Button 
+              variant="primary" 
+              onClick={next}
+              className="min-touch-target focus-visible:focus-visible ms-2"
+              aria-label="Go to next step"
+            >
+              Siguiente <ArrowRight className="ms-1" aria-hidden="true" />
             </Button>
           )}
 
           {wizard.isLast && (
-            <Button variant="success" onClick={submitFinal}>
-              <Save className="me-2" /> Enviar
+            <Button 
+              variant="success" 
+              onClick={submitFinal}
+              className="min-touch-target focus-visible:focus-visible ms-2"
+              aria-label="Submit form"
+            >
+              <Save className="me-2" aria-hidden="true" /> Enviar
             </Button>
           )}
-        </div>
+        </nav>
       </form>
     </FormProvider>
   );

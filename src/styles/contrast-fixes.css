@@ -1,0 +1,81 @@
+/* Bootstrap Superhero theme contrast improvements for WCAG AA */
+
+/* Ensure text meets 4.5:1 contrast ratio */
+.text-muted {
+  color: #adb5bd !important; /* Increased from #999 for better contrast */
+}
+
+/* Form field contrast improvements */
+.form-control,
+.form-select {
+  background-color: #2e3440 !important;
+  border-color: #4c566a !important;
+  color: #eceff4 !important;
+}
+
+.form-control:focus,
+.form-select:focus {
+  background-color: #3b4252 !important;
+  border-color: #5e81ac !important;
+  color: #eceff4 !important;
+}
+
+.form-control::placeholder {
+  color: #88c0d0 !important; /* Higher contrast placeholder */
+}
+
+/* Button contrast improvements */
+.btn-primary {
+  background-color: #5e81ac !important;
+  border-color: #5e81ac !important;
+  color: #eceff4 !important;
+}
+
+.btn-secondary {
+  background-color: #4c566a !important;
+  border-color: #4c566a !important;
+  color: #eceff4 !important;
+}
+
+.btn-success {
+  background-color: #a3be8c !important;
+  border-color: #a3be8c !important;
+  color: #2e3440 !important;
+}
+
+/* Card contrast */
+.card {
+  background-color: #2e3440 !important;
+  border-color: #4c566a !important;
+  color: #eceff4 !important;
+}
+
+.card-header,
+.card-footer {
+  background-color: #3b4252 !important;
+  border-color: #4c566a !important;
+}
+
+/* Error states */
+.form-control.is-invalid {
+  border-color: #bf616a !important;
+}
+
+.form-control.is-invalid:focus {
+  border-color: #bf616a !important;
+  box-shadow: 0 0 0 0.2rem rgba(191, 97, 106, 0.25) !important;
+}
+
+.invalid-feedback {
+  color: #ebcb8b !important;
+  font-weight: 500;
+}
+
+/* Links */
+a {
+  color: #88c0d0 !important;
+}
+
+a:hover {
+  color: #81a1c1 !important;
+}

@@ -16,7 +16,9 @@ const MainLayout: FC<Props> = ({ children, footer, header }) => {
             <Card.Header as="h1" className="text-center">
               {header}
             </Card.Header>
-            <Card.Body>{children}</Card.Body>
+            <Card.Body id="main-content" tabIndex={-1}>
+              {children}
+            </Card.Body>
             <Card.Footer className="text-muted text-end">{footer}</Card.Footer>
           </Card>
         </Col>

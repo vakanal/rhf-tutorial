@@ -1,5 +1,4 @@
 import type { FC, ReactNode } from "react";
-import Card from "react-bootstrap/Card";
 
 type Props = {
   children: ReactNode;
@@ -11,10 +10,12 @@ type Props = {
 const FormLayout: FC<Props> = ({ children, subTitle, text, title }) => {
   return (
     <>
-      <Card.Title>{title}</Card.Title>
-      <Card.Subtitle className="mb-4 text-muted">{subTitle}</Card.Subtitle>
-      {text && <Card.Text>{text}</Card.Text>}
-      {children}
+      <h2 className="h4 mb-2">{title}</h2>
+      <p className="text-muted mb-4">{subTitle}</p>
+      {text && <p className="mb-4">{text}</p>}
+      <section aria-label="Form content">
+        {children}
+      </section>
     </>
   );
 };

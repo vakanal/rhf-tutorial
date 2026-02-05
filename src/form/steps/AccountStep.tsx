@@ -3,11 +3,23 @@ import { RHFTextField } from "../components/RHFTextField";
 
 const AccountStep: FC = () => {
   return (
-    <>
-      <h2>Cuenta</h2>
-      <RHFTextField name="email" label="Email" type="email" />
-      <RHFTextField name="password" label="Contraseña" type="password" />
-    </>
+    <fieldset>
+      <legend className="h4 mb-3">Información de cuenta</legend>
+      <RHFTextField 
+        name="email" 
+        label="Correo electrónico" 
+        type="email"
+        required
+        description="Usaremos este correo para contactarte"
+      />
+      <RHFTextField 
+        name="password" 
+        label="Contraseña" 
+        type="password"
+        required
+        description="Mínimo 8 caracteres, incluye mayúsculas y números"
+      />
+    </fieldset>
   );
 };
 

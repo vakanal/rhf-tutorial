@@ -1,6 +1,7 @@
 import type { FC } from "react";
 import MainLayout from "@layouts/MainLayout";
 import FormLayout from "@layouts/FormLayout";
+import SkipLink from "@components/SkipLink";
 import WizardForm from "./form/wizard/WizardForm";
 //import WizardFormAlt from "@components/WizardFormAlt";
 //import WizardForm from "@components/WizardForm";
@@ -8,7 +9,9 @@ import WizardForm from "./form/wizard/WizardForm";
 
 const App: FC = () => {
   return (
-    <MainLayout footer="Created By AGR" header="RHF Tutorial">
+    <>
+      <SkipLink />
+      <MainLayout footer="Created By AGR" header="RHF Tutorial">
       {/* 
       <FormLayout title="Main Form" subTitle="The first form">
         <MainForm />
@@ -23,6 +26,7 @@ const App: FC = () => {
         <WizardForm />
       </FormLayout>
     </MainLayout>
+    </>
   );
 };
 
