@@ -11,7 +11,7 @@ const MainLayout: FC<Props> = ({ children, footer, header }) => {
   return (
     <Container className="mt-5">
       <Row className="justify-content-center">
-        <Col md={12} lg={10}>
+        <Col md={10} lg={8}>
           <Card border="light">
             <Card.Header as="h1" className="text-center">
               {header}
